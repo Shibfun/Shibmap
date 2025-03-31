@@ -204,14 +204,12 @@
     <div class="header">
         <h1>Shibmap</h1>
         <div class="wallet-info">
-            Wallet: <span id="walletAddress">Not connected</span><br>
-            <a href="https://shibariumscan.io" target="_blank">Explorer</a>
+            Wallet: <span id="walletAddress">Not connected</span>
         </div>
         <button id="connectWalletBtn" class="action-btn">Connect Wallet</button>
     </div>
     <div class="input-container">
         <button onclick="loadBlocks()">Query</button>
-        <button onclick="generatePixelImage()" id="generateButton" style="display: none;">Generate Pixel Image</button>
     </div>
     <div id="loading">Loading data...</div>
     <div id="error"></div>
@@ -250,7 +248,7 @@
         const canvas = document.getElementById('myCanvas');
         const ctx = canvas.getContext('2d');
         let web3, accounts, contract;
-        const CONTRACT_ADDRESS = "0x0Abb7aEb720D0266fB98816B93aF53aD966FA5Ba";
+        const CONTRACT_ADDRESS = "0x6169695Fd3F493DbDa23EAB88C452B3e634F3858";
         const CONTRACT_ABI = [
             {"inputs":[],"stateMutability":"nonpayable","type":"constructor"},
             {"inputs":[{"internalType":"string","name":"uri","type":"string"},{"internalType":"string[]","name":"attributes","type":"string[]"}],"name":"mintNFT","outputs":[],"stateMutability":"nonpayable","type":"function"},
@@ -351,7 +349,6 @@
             contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
             showModal('Connected to Shibarium successfully!');
             updateWalletAddress();
-            document.getElementById('mintBtn').disabled = false;
             connectButton.classList.remove('loading');
         }
 
@@ -401,17 +398,17 @@
             const loadingDiv = document.getElementById('loading');
             const errorDiv = document.getElementById('error');
             const table = document.getElementById('blockTable');
-            const generateButton = document.getElementById('generateButton');
             const canvas = document.getElementById('myCanvas');
             const downloadButton = document.getElementById('downloadButton');
+            const mintButton = document.getElementById('mintBtn');
 
             tableBody.innerHTML = '';
             errorDiv.style.display = 'none';
             loadingDiv.style.display = 'block';
             table.style.display = 'none';
-            generateButton.style.display = 'none';
             canvas.style.display = 'none';
             downloadButton.style.display = 'none';
+            mintButton.disabled = true;
 
             const promises = [];
             for (let i = startBlock; i <= endBlock; i++) {
@@ -447,10 +444,10 @@
             });
 
             calculateAttributes();
+            generatePixelImage();
 
             loadingDiv.style.display = 'none';
             table.style.display = 'table';
-            generateButton.style.display = 'inline-block';
         }
 
         function calculateAttributes() {
@@ -494,13 +491,11 @@
         }
 
         function generatePixelImage() {
-            const errorDiv = document.getElementById('error');
             const canvas = document.getElementById('myCanvas');
             const downloadButton = document.getElementById('downloadButton');
+            const mintButton = document.getElementById('mintBtn');
 
             if (blockData.length !== 400) {
-                errorDiv.textContent = "Please query 400 blocks of data first!";
-                errorDiv.style.display = 'block';
                 return;
             }
 
@@ -521,6 +516,10 @@
 
             canvas.style.display = 'block';
             downloadButton.style.display = 'inline-block';
+            mintButton.disabled = false;
+            if (accounts) {
+                mintButton.disabled = false;
+            }
         }
 
         function downloadImage() {
@@ -554,12 +553,15 @@
                 const tokenURI = `data:application/json;base64,${btoa(JSON.stringify(metadata))}`;
                 const attributeValues = attributes.map(attr => attr.value);
 
-                showModal('Minting NFT...');
+                showModal('Minting NFT... Please wait 10 seconds.');
+                await new Promise(resolve => setTimeout(resolve, 10000));
                 await contract.methods.mintNFT(tokenURI, attributeValues).send({ from: accounts[0] });
-                showModal('NFT minted successfully!');
+                showModal('NFT minted successfully! Page will refresh.');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
             } catch (error) {
                 showModal('Minting failed: ' + error.message);
-            } finally {
                 mintButton.classList.remove('loading');
                 mintButton.disabled = false;
             }
