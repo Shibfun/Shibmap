@@ -76,6 +76,31 @@
         tr:hover {
             background-color: #444;
         }
+        .block-hash-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .block-hash {
+            display: inline-block;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .copy-btn {
+            padding: 2px 5px;
+            font-size: 12px;
+            background: #ff8c00;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .copy-btn:hover {
+            background: #e07b00;
+        }
         #loading, #error, #blockRange {
             text-align: center;
             font-size: 18px;
@@ -188,8 +213,23 @@
             h1 { font-size: 32px; }
             .input-container { flex-wrap: wrap; gap: 8px; }
             button { padding: 3px 8px; font-size: 12px; }
-            table { width: 100%; }
-            th, td { padding: 8px; font-size: 12px; }
+            table { 
+                width: 100%; 
+                display: block;
+                overflow-x: auto;
+            }
+            th, td { 
+                padding: 8px; 
+                font-size: 12px; 
+                min-width: 80px;
+            }
+            .block-hash {
+                max-width: 80px;
+            }
+            .copy-btn {
+                padding: 1px 3px;
+                font-size: 10px;
+            }
             canvas { max-width: 300px; }
             .attributes-container h2 { font-size: 24px; }
             #attributesList { grid-template-columns: 1fr; gap: 8px; }
@@ -219,7 +259,6 @@
             <tr>
                 <th>Block Number</th>
                 <th>Block Hash</th>
-                <th>Transaction Count</th>
             </tr>
         </thead>
         <tbody id="blockData"></tbody>
@@ -287,6 +326,14 @@
 
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showModal('Hash copied to clipboard!');
+            }).catch(err => {
+                showModal('Failed to copy hash: ' + err);
+            });
         }
 
         async function connectWallet() {
@@ -438,10 +485,15 @@
 
             blockData.forEach(block => {
                 const row = document.createElement('tr');
+                const shortHash = block.blockHash.length > 10 ? `${block.blockHash.slice(0, 6)}...${block.blockHash.slice(-4)}` : block.blockHash;
                 row.innerHTML = `
                     <td>${block.blockNumber}</td>
-                    <td>${block.blockHash}</td>
-                    <td>${block.txCount}</td>
+                    <td>
+                        <div class="block-hash-container">
+                            <span class="block-hash">${shortHash}</span>
+                            <button class="copy-btn" onclick="copyToClipboard('${block.blockHash}')">Copy</button>
+                        </div>
+                    </td>
                 `;
                 tableBody.appendChild(row);
             });
