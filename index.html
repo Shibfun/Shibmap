@@ -259,6 +259,7 @@
             <tr>
                 <th>Block Number</th>
                 <th>Block Hash</th>
+                <th>Transaction Count</th>
             </tr>
         </thead>
         <tbody id="blockData"></tbody>
@@ -490,10 +491,11 @@
                     <td>${block.blockNumber}</td>
                     <td>
                         <div class="block-hash-container">
-                            <span class="block-hash">${shortHash}</span>
+                            <span class="block-hash" title="${block.blockHash}">${shortHash}</span>
                             <button class="copy-btn" onclick="copyToClipboard('${block.blockHash}')">Copy</button>
                         </div>
                     </td>
+                    <td>${block.txCount}</td>
                 `;
                 tableBody.appendChild(row);
             });
