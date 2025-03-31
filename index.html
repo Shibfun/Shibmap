@@ -76,7 +76,7 @@
         tr:hover {
             background-color: #444;
         }
-        #loading, #error {
+        #loading, #error, #blockRange {
             text-align: center;
             font-size: 18px;
             color: #ff8c00;
@@ -211,6 +211,7 @@
     <div class="input-container">
         <button onclick="loadBlocks()">Query</button>
     </div>
+    <div id="blockRange"></div>
     <div id="loading">Loading data...</div>
     <div id="error"></div>
     <table id="blockTable" style="display: none;">
@@ -245,13 +246,15 @@
     <script>
         let blockData = [];
         let attributes = [];
+        let startBlock = 1;
+        let endBlock = 400;
         const canvas = document.getElementById('myCanvas');
         const ctx = canvas.getContext('2d');
         let web3, accounts, contract;
-        const CONTRACT_ADDRESS = "0x6169695Fd3F493DbDa23EAB88C452B3e634F3858";
+        const CONTRACT_ADDRESS = "0xeFb2986b14B5975ceD3692C10B66A84B07E998DE";
         const CONTRACT_ABI = [
             {"inputs":[],"stateMutability":"nonpayable","type":"constructor"},
-            {"inputs":[{"internalType":"string","name":"uri","type":"string"},{"internalType":"string[]","name":"attributes","type":"string[]"}],"name":"mintNFT","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"string","name":"uri","type":"string"},{"internalType":"string[]","name":"attributes","type":"string[]"},{"internalType":"uint256","name":"startBlock","type":"uint256"},{"internalType":"uint256","name":"endBlock","type":"uint256"}],"name":"mintNFT","outputs":[],"stateMutability":"nonpayable","type":"function"},
             {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"string","name":"newURI","type":"string"},{"internalType":"string[]","name":"newAttributes","type":"string[]"}],"name":"updateTokenMetadata","outputs":[],"stateMutability":"nonpayable","type":"function"},
             {"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},
             {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
@@ -268,6 +271,7 @@
             {"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
             {"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
             {"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"groupId","type":"uint256"}],"name":"mintedGroups","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"uri","type":"string"},{"indexed":false,"internalType":"string[]","name":"attributes","type":"string[]"}],"name":"Minted","type":"event"},
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"newURI","type":"string"},{"indexed":false,"internalType":"string[]","name":"newAttributes","type":"string[]"}],"name":"MetadataUpdated","type":"event"},
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"}],"name":"OwnershipRenounced","type":"event"}
@@ -361,6 +365,21 @@
             }
         }
 
+        async function findNextAvailableGroup() {
+            if (!contract) return null;
+            const currentBlock = await web3.eth.getBlockNumber();
+            const maxGroupId = Math.floor(currentBlock / 400);
+            for (let groupId = 0; groupId <= maxGroupId; groupId++) {
+                const isMinted = await contract.methods.mintedGroups(groupId).call();
+                if (!isMinted) {
+                    startBlock = groupId * 400 + 1;
+                    endBlock = startBlock + 399;
+                    return { startBlock, endBlock };
+                }
+            }
+            return null;
+        }
+
         async function fetchBlockData(blockNumber) {
             try {
                 const response = await fetch(`https://www.shibariumscan.io/api/v2/blocks?type=block&block_number=${blockNumber}`);
@@ -392,11 +411,10 @@
         }
 
         async function loadBlocks() {
-            const startBlock = 1;
-            const endBlock = 400;
             const tableBody = document.getElementById('blockData');
             const loadingDiv = document.getElementById('loading');
             const errorDiv = document.getElementById('error');
+            const blockRangeDiv = document.getElementById('blockRange');
             const table = document.getElementById('blockTable');
             const canvas = document.getElementById('myCanvas');
             const downloadButton = document.getElementById('downloadButton');
@@ -404,11 +422,25 @@
 
             tableBody.innerHTML = '';
             errorDiv.style.display = 'none';
+            blockRangeDiv.style.display = 'none';
             loadingDiv.style.display = 'block';
             table.style.display = 'none';
             canvas.style.display = 'none';
             downloadButton.style.display = 'none';
             mintButton.disabled = true;
+
+            const range = await findNextAvailableGroup();
+            if (!range) {
+                errorDiv.textContent = "No available block range to mint. Please wait for new blocks.";
+                errorDiv.style.display = 'block';
+                loadingDiv.style.display = 'none';
+                return;
+            }
+
+            startBlock = range.startBlock;
+            endBlock = range.endBlock;
+            blockRangeDiv.textContent = `You can mint for blocks ${startBlock} to ${endBlock}`;
+            blockRangeDiv.style.display = 'block';
 
             const promises = [];
             for (let i = startBlock; i <= endBlock; i++) {
@@ -491,11 +523,14 @@
         }
 
         function generatePixelImage() {
+            const errorDiv = document.getElementById('error');
             const canvas = document.getElementById('myCanvas');
             const downloadButton = document.getElementById('downloadButton');
             const mintButton = document.getElementById('mintBtn');
 
             if (blockData.length !== 400) {
+                errorDiv.textContent = "Please query 400 blocks of data first!";
+                errorDiv.style.display = 'block';
                 return;
             }
 
@@ -517,9 +552,6 @@
             canvas.style.display = 'block';
             downloadButton.style.display = 'inline-block';
             mintButton.disabled = false;
-            if (accounts) {
-                mintButton.disabled = false;
-            }
         }
 
         function downloadImage() {
@@ -530,78 +562,76 @@
         }
 
         async function mintNFT() {
-            if (!web3 || !contract || !accounts) {
-                showModal('Please connect your wallet first!');
-                return;
-            }
+    if (!web3 || !contract || !accounts) {
+        showModal('Please connect your wallet first!');
+        return;
+    }
 
-            const mintButton = document.getElementById('mintBtn');
-            mintButton.classList.add('loading');
-            mintButton.disabled = true;
+    const mintButton = document.getElementById('mintBtn');
+    mintButton.classList.add('loading');
+    mintButton.disabled = true;
 
-            try {
-                const imageData = canvas.toDataURL("image/png").split(',')[1];
-                const metadata = {
-                    name: `Shibmap #${attributes[0].value}`,
-                    description: "A unique Shibmap NFT based on Shibarium blockchain data",
-                    image: `data:image/png;base64,${imageData}`,
-                    attributes: attributes.map(attr => ({
-                        trait_type: attr.name,
-                        value: attr.value
-                    }))
-                };
-                const tokenURI = `data:application/json;base64,${btoa(JSON.stringify(metadata))}`;
-                const attributeValues = attributes.map(attr => attr.value);
-
-                showModal('Minting NFT... Please wait 10 seconds.');
-                await new Promise(resolve => setTimeout(resolve, 10000));
-                await contract.methods.mintNFT(tokenURI, attributeValues).send({ from: accounts[0] });
-                showModal('NFT minted successfully! Page will refresh.');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            } catch (error) {
-                showModal('Minting failed: ' + error.message);
-                mintButton.classList.remove('loading');
-                mintButton.disabled = false;
-            }
-        }
-
-        window.onload = () => {
-            if (!window.location.protocol.startsWith('http')) {
-                showModal('Please run this page via a local server (e.g., "npx serve") to connect MetaMask.');
-            } else if (!window.ethereum) {
-                showModal('No wallet detected. Please install <a href="https://metamask.io" target="_blank">MetaMask</a>.');
-            }
+    try {
+        const imageData = canvas.toDataURL("image/png").split(',')[1];
+        const metadata = {
+            name: `Shibmap #${attributes[0].value}`,
+            description: "A unique Shibmap NFT based on Shibarium blockchain data",
+            image: `data:image/png;base64,${imageData}`,
+            attributes: attributes.map(attr => ({
+                trait_type: attr.name,
+                value: attr.value
+            }))
         };
+        const tokenURI = `data:application/json;base64,${btoa(JSON.stringify(metadata))}`;
+        const attributeValues = attributes.map(attr => attr.value);
 
-        window.ethereum?.on('chainChanged', (chainId) => {
-            if (parseInt(chainId, 16) !== 109) {
-                showModal('Switched to wrong network. Please reconnect to Shibarium.');
-                web3 = null;
-                contract = null;
-                accounts = null;
-                updateWalletAddress();
-                document.getElementById('mintBtn').disabled = true;
-            } else {
-                connectWallet();
-            }
-        });
+        showModal('Minting NFT... Please wait 10 seconds.');
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await contract.methods.mintNFT(tokenURI, attributeValues, startBlock, endBlock).send({ from: accounts[0] });
+        showModal('NFT minted successfully! Page will refresh.');
+        setTimeout(() => location.reload(), 2000);
+    } catch (error) {
+        showModal('Minting failed: ' + error.message);
+        mintButton.classList.remove('loading');
+        mintButton.disabled = false;
+    }
+}
 
-        window.ethereum?.on('accountsChanged', (newAccounts) => {
-            if (newAccounts.length) {
-                connectWallet();
-            } else {
-                showModal('Wallet disconnected. Please reconnect.');
-                web3 = null;
-                contract = null;
-                accounts = null;
-                updateWalletAddress();
-                document.getElementById('mintBtn').disabled = true;
-            }
-        });
+window.onload = () => {
+    if (!window.location.protocol.startsWith('http')) {
+        showModal('Please run this page via a local server (e.g., "npx serve") to connect MetaMask.');
+    } else if (!window.ethereum) {
+        showModal('No wallet detected. Please install <a href="https://metamask.io" target="_blank">MetaMask</a>.');
+    }
+};
 
-        document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
+window.ethereum?.on('chainChanged', (chainId) => {
+    if (parseInt(chainId, 16) !== 109) {
+        showModal('Switched to wrong network. Please reconnect to Shibarium.');
+        web3 = null;
+        contract = null;
+        accounts = null;
+        updateWalletAddress();
+        document.getElementById('mintBtn').disabled = true;
+    } else {
+        connectWallet();
+    }
+});
+
+window.ethereum?.on('accountsChanged', (newAccounts) => {
+    if (newAccounts.length) {
+        connectWallet();
+    } else {
+        showModal('Wallet disconnected. Please reconnect.');
+        web3 = null;
+        contract = null;
+        accounts = null;
+        updateWalletAddress();
+        document.getElementById('mintBtn').disabled = true;
+    }
+});
+
+document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
     </script>
 </body>
 </html>
