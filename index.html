@@ -34,15 +34,6 @@
             text-align: center;
             margin-bottom: 20px;
         }
-        input[type="number"] {
-            padding: 5px;
-            width: 100px;
-            margin: 0 10px;
-            border-radius: 5px;
-            border: 1px solid #ff8c00;
-            background: #333;
-            color: #fff;
-        }
         button {
             padding: 5px 15px;
             background: linear-gradient(45deg, #ff8c00, #e07b00);
@@ -196,7 +187,6 @@
         @media (max-width: 768px) {
             h1 { font-size: 32px; }
             .input-container { flex-wrap: wrap; gap: 8px; }
-            input[type="number"] { width: 80px; font-size: 12px; }
             button { padding: 3px 8px; font-size: 12px; }
             table { width: 100%; }
             th, td { padding: 8px; font-size: 12px; }
@@ -220,8 +210,6 @@
         <button id="connectWalletBtn" class="action-btn">Connect Wallet</button>
     </div>
     <div class="input-container">
-        <label>Block ID (0 for 1-400, 1 for 401-800, etc.):</label>
-        <input type="number" id="blockId" min="0" value="0">
         <button onclick="loadBlocks()">Query</button>
         <button onclick="generatePixelImage()" id="generateButton" style="display: none;">Generate Pixel Image</button>
     </div>
@@ -262,11 +250,12 @@
         const canvas = document.getElementById('myCanvas');
         const ctx = canvas.getContext('2d');
         let web3, accounts, contract;
-        const CONTRACT_ADDRESS = "0x6169695Fd3F493DbDa23EAB88C452B3e634F3858";
+        const CONTRACT_ADDRESS = "0x0Abb7aEb720D0266fB98816B93aF53aD966FA5Ba";
         const CONTRACT_ABI = [
             {"inputs":[],"stateMutability":"nonpayable","type":"constructor"},
             {"inputs":[{"internalType":"string","name":"uri","type":"string"},{"internalType":"string[]","name":"attributes","type":"string[]"}],"name":"mintNFT","outputs":[],"stateMutability":"nonpayable","type":"function"},
             {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"string","name":"newURI","type":"string"},{"internalType":"string[]","name":"newAttributes","type":"string[]"}],"name":"updateTokenMetadata","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},
             {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
             {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getTokenAttributes","outputs":[{"internalType":"string[]","name":"","type":"string[]"}],"stateMutability":"view","type":"function"},
             {"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
@@ -279,7 +268,11 @@
             {"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},
             {"inputs":[{"internalType":"address","name":"tokenOwner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
             {"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
-            {"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"}
+            {"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"uri","type":"string"},{"indexed":false,"internalType":"string[]","name":"attributes","type":"string[]"}],"name":"Minted","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"newURI","type":"string"},{"indexed":false,"internalType":"string[]","name":"newAttributes","type":"string[]"}],"name":"MetadataUpdated","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"}],"name":"OwnershipRenounced","type":"event"}
         ];
         const shibariumMainnet = {
             chainId: 109,
@@ -302,16 +295,16 @@
         };
         const attributeOrder = ["ShibaBiome", "ShibaTerrain", "ShibaTreasure", "ShibaRelic", "ShibaSpirit", "ShibaWeather", "ShibaTerritory", "ShibaElement", "ShibaDanger", "ShibaRarity"];
         const attributeRanges = {
-            ShibaBiome: 2000, // 10 values
-            ShibaTerrain: 2500, // 8 values
-            ShibaTreasure: 1666, // 12 values
-            ShibaRelic: 2000, // 10 values
-            ShibaSpirit: 4000, // 5 values
-            ShibaWeather: 2500, // 8 values
-            ShibaTerritory: 3333, // 6 values
-            ShibaElement: 2857, // 7 values
-            ShibaDanger: 4000, // 5 values
-            ShibaRarity: 2000 // 10 values
+            ShibaBiome: 2000,
+            ShibaTerrain: 2500,
+            ShibaTreasure: 1666,
+            ShibaRelic: 2000,
+            ShibaSpirit: 4000,
+            ShibaWeather: 2500,
+            ShibaTerritory: 3333,
+            ShibaElement: 2857,
+            ShibaDanger: 4000,
+            ShibaRarity: 2000
         };
 
         function showModal(message) {
@@ -377,7 +370,7 @@
                 const data = await response.json();
                 if (data.items && data.items.length > 0) {
                     const block = data.items[0];
-                    const txCount = Math.min(block.transaction_count, 500); // Cap at 500 transactions
+                    const txCount = Math.min(block.transaction_count, 500);
                     return {
                         blockNumber: block.height,
                         blockHash: block.hash,
@@ -402,9 +395,8 @@
         }
 
         async function loadBlocks() {
-            const blockId = parseInt(document.getElementById('blockId').value);
-            const startBlock = blockId * 400 + 1;
-            const endBlock = startBlock + 399;
+            const startBlock = 1;
+            const endBlock = 400;
             const tableBody = document.getElementById('blockData');
             const loadingDiv = document.getElementById('loading');
             const errorDiv = document.getElementById('error');
@@ -412,12 +404,6 @@
             const generateButton = document.getElementById('generateButton');
             const canvas = document.getElementById('myCanvas');
             const downloadButton = document.getElementById('downloadButton');
-
-            if (isNaN(blockId) || blockId < 0) {
-                errorDiv.textContent = "Please enter a valid Block ID (0 or greater)";
-                errorDiv.style.display = 'block';
-                return;
-            }
 
             tableBody.innerHTML = '';
             errorDiv.style.display = 'none';
@@ -556,9 +542,8 @@
 
             try {
                 const imageData = canvas.toDataURL("image/png").split(',')[1];
-                const totalSupply = await contract.methods.totalSupply().call();
                 const metadata = {
-                    name: `Shibmap #${totalSupply}`,
+                    name: `Shibmap #${attributes[0].value}`,
                     description: "A unique Shibmap NFT based on Shibarium blockchain data",
                     image: `data:image/png;base64,${imageData}`,
                     attributes: attributes.map(attr => ({
