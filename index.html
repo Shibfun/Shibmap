@@ -228,7 +228,7 @@
         <canvas id="myCanvas" width="500" height="500"></canvas>
         <div class="action-buttons">
             <button onclick="downloadImage()" id="downloadButton" style="display: none;" class="action-btn">Download Image</button>
-            <button id="mintBtn" class="action-btn" onclick="mintNFT()" disabled>Mint NFT</button>
+            <button id="mintBtn" class="action-btn" onclick="startMintCountdown()" disabled>Mint NFT</button>
         </div>
     </div>
     <div class="attributes-container">
@@ -546,15 +546,29 @@
             link.click();
         }
 
-        async function mintNFT() {
+        function startMintCountdown() {
             if (!web3 || !contract || !accounts) {
                 showModal('Please connect your wallet first!');
                 return;
             }
 
             const mintButton = document.getElementById('mintBtn');
-            mintButton.classList.add('loading');
             mintButton.disabled = true;
+            mintButton.classList.add('loading');
+
+            let countdown = 10;
+            const countdownInterval = setInterval(() => {
+                showModal(`Preparing to mint NFT... ${countdown} seconds remaining`);
+                countdown--;
+                if (countdown < 0) {
+                    clearInterval(countdownInterval);
+                    mintNFT();
+                }
+            }, 1000);
+        }
+
+        async function mintNFT() {
+            const mintButton = document.getElementById('mintBtn');
 
             try {
                 const imageData = canvas.toDataURL("image/png").split(',')[1];
@@ -570,15 +584,8 @@
                 const tokenURI = `data:application/json;base64,${btoa(JSON.stringify(metadata))}`;
                 const attributeValues = attributes.map(attr => attr.value);
 
-                let countdown = 10;
-                const countdownInterval = setInterval(() => {
-                    showModal(`Minting NFT... Please wait ${countdown} seconds.`);
-                    countdown--;
-                    if (countdown < 0) clearInterval(countdownInterval);
-                }, 1000);
-
+                showModal('Minting NFT... Please confirm in your wallet');
                 await contract.methods.mintNFT(tokenURI, attributeValues, startBlock, endBlock).send({ from: accounts[0] });
-                clearInterval(countdownInterval);
                 showModal('NFT minted successfully!');
 
                 mintButton.classList.remove('loading');
