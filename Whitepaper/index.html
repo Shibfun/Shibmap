@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shibmap Whitepaper</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            margin: 0;
+            padding: 40px;
+            color: #fff;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #333;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
+        }
+        h1 {
+            font-size: 48px;
+            color: #ff8c00;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 28px;
+            color: #ff8c00;
+            margin-top: 30px;
+            border-bottom: 2px solid #ff8c00;
+            padding-bottom: 5px;
+        }
+        p {
+            font-size: 16px;
+            margin: 15px 0;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        li:before {
+            content: "🐾";
+            position: absolute;
+            left: 0;
+            color: #ff8c00;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #2d2d2d;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ff8c00;
+        }
+        th {
+            background: linear-gradient(45deg, #ff8c00, #e07b00);
+            color: #1a1a1a;
+            font-weight: bold;
+        }
+        .highlight {
+            background: #444;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        @media (max-width: 768px) {
+            body { padding: 20px; }
+            .container { padding: 20px; }
+            h1 { font-size: 32px; }
+            h2 { font-size: 22px; }
+            p, li { font-size: 14px; }
+            th, td { padding: 8px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Shibmap Whitepaper</h1>
+        <p style="text-align: center; font-style: italic;">Unleash the Power of Shibarium through Unique NFT Maps</p>
+
+        <h2>1. Introduction</h2>
+        <p>Welcome to Shibmap, a groundbreaking NFT project built on the Shibarium blockchain! Shibmap transforms real blockchain data into unique, collectible digital maps, each representing a slice of Shibarium’s history. Imagine owning a piece of the blockchain, visualized as a colorful pixel map and enriched with exciting Shiba-themed attributes like biomes, treasures, and rarities. Whether you’re a crypto enthusiast, a Shiba Inu fan, or an NFT collector, Shibmap offers a fun and engaging way to interact with the Shibarium ecosystem.</p>
+
+        <h2>2. What is Shibmap?</h2>
+        <p>Shibmap is an NFT platform where users can mint one-of-a-kind digital maps based on Shibarium blockchain data. Each map is generated from a group of 400 consecutive blocks, turning transaction counts into a 20x20 pixel grid and a set of 10 unique attributes. These NFTs are not just art—they’re a snapshot of Shibarium’s activity, making every Shibmap a historical artifact with its own personality.</p>
+        <p>With Shibmap, you can:</p>
+        <ul>
+            <li>Connect your wallet to Shibarium.</li>
+            <li>Query the next available set of 400 blocks.</li>
+            <li>Preview your unique pixel map and attributes.</li>
+            <li>Mint your Shibmap as an NFT to keep forever!</li>
+        </ul>
+
+        <h2>3. How Shibmap Works</h2>
+        <p>Shibmap uses Shibarium’s blockchain data to create each NFT. Here’s the process in simple terms:</p>
+        <ol>
+            <li><strong>Connect Your Wallet:</strong> Link your MetaMask wallet to the Shibarium network to get started.</li>
+            <li><strong>Query Blocks:</strong> The system finds the next unminted group of 400 blocks on Shibarium.</li>
+            <li><strong>Data to Art:</strong> The transaction counts from these blocks are turned into a colorful 20x20 pixel map and 10 unique attributes.</li>
+            <li><strong>Mint Your NFT:</strong> Once you’re happy with your map, mint it as an NFT on Shibarium using BONE tokens.</li>
+            <li><strong>Download or Collect:</strong> Save your map as an image or keep it in your wallet as a collectible!</li>
+        </ol>
+        <p class="highlight">Each Shibmap is unique because it’s tied to a specific range of blocks that can only be minted once. No two Shibmaps are the same!</p>
+
+        <h2>4. The Pixel Map</h2>
+        <p>The heart of every Shibmap is its 20x20 pixel grid, made up of 400 squares—one for each block in your chosen range. The color of each square depends on the number of transactions in that block:</p>
+        <table>
+            <tr><th>Transaction Count</th><th>Color</th></tr>
+            <tr><td>0</td><td>White</td></tr>
+            <tr><td>1-50</td><td>Light Gray</td></tr>
+            <tr><td>51-100</td><td>Tomato Red</td></tr>
+            <tr><td>101-150</td><td>Orange Red</td></tr>
+            <tr><td>151-200</td><td>Yellow</td></tr>
+            <tr><td>201-250</td><td>Light Green</td></tr>
+            <tr><td>251-300</td><td>Green</td></tr>
+            <tr><td>301-350</td><td>Turquoise</td></tr>
+            <tr><td>351-400</td><td>Blue</td></tr>
+            <tr><td>401-450</td><td>Purple</td></tr>
+            <tr><td>451+</td><td>Gold</td></tr>
+        </table>
+        <p>This creates a vibrant, abstract map that reflects Shibarium’s activity—quiet blocks in white, busy blocks in gold, and everything in between!</p>
+
+        <h2>5. Shibmap Attributes</h2>
+        <p>Every Shibmap comes with 10 unique attributes that bring your NFT to life with a Shiba-inspired theme. These attributes are calculated from the total transactions in groups of 40 blocks within your 400-block range. Here’s how each one works:</p>
+        <table>
+            <tr><th>Attribute</th><th>Description</th><th>How It’s Calculated</th></tr>
+            <tr>
+                <td>Shiba Biome</td>
+                <td>The landscape of your map (e.g., Forest, Desert, Volcano)</td>
+                <td>Blocks 1-40: 0-2000 tx = Forest, 2000-4000 = Desert, up to 18,000+ = Bamboo Grove</td>
+            </tr>
+            <tr>
+                <td>Shiba Terrain</td>
+                <td>The ground type (e.g., Sands, Mud, Grass)</td>
+                <td>Blocks 41-80: 0-2500 tx = Sands, 2500-5000 = Dust, up to 17,500+ = Clay</td>
+            </tr>
+            <tr>
+                <td>Shiba Treasure</td>
+                <td>A hidden gem (e.g., Bone, Coin, Gem)</td>
+                <td>Blocks 81-120: 0-1666 tx = Bone, 1666-3332 = Coin, up to 19,992+ = Opal</td>
+            </tr>
+            <tr>
+                <td>Shiba Relic</td>
+                <td>An ancient find (e.g., Print, Totem, Shrine)</td>
+                <td>Blocks 121-160: 0-2000 tx = Print, 2000-4000 = Totem, up to 18,000+ = Shrine</td>
+            </tr>
+            <tr>
+                <td>Shiba Spirit</td>
+                <td>A mystical presence (e.g., None, Guardian, Wisp)</td>
+                <td>Blocks 161-200: 0-4000 tx = None, 4000-8000 = Guardian, up to 16,000+ = Wisp</td>
+            </tr>
+            <tr>
+                <td>Shiba Weather</td>
+                <td>The climate (e.g., Sunny, Rainy, Stormy)</td>
+                <td>Blocks 201-240: 0-2500 tx = Sunny, 2500-5000 = Rainy, up to 17,500+ = Sun</td>
+            </tr>
+            <tr>
+                <td>Shiba Territory</td>
+                <td>The domain (e.g., Patch, Den, Kingdom)</td>
+                <td>Blocks 241-280: 0-3333 tx = Patch, 3333-6666 = Den, up to 19,998+ = Kingdom</td>
+            </tr>
+            <tr>
+                <td>Shiba Element</td>
+                <td>A natural force (e.g., Fire, Water, Spirit)</td>
+                <td>Blocks 281-320: 0-2857 tx = Fire, 2857-5714 = Water, up to 19,999+ = Spirit</td>
+            </tr>
+            <tr>
+                <td>Shiba Danger</td>
+                <td>The risk level (e.g., Safe, Mild, Wild)</td>
+                <td>Blocks 321-360: 0-4000 tx = Safe, 4000-8000 = Mild, up to 16,000+ = Wild</td>
+            </tr>
+            <tr>
+                <td>Shiba Rarity</td>
+                <td>How special it is (e.g., Common, Rare, Divine)</td>
+                <td>Blocks 361-400: 0-2000 tx = Common, 2000-4000 = Uncommon, up to 18,000+ = Divine</td>
+            </tr>
+        </table>
+        <p>The higher the transaction count in each group, the rarer and more exciting the attribute becomes. For example, a Shiba Rarity of “Divine Howl” needs over 18,000 transactions in blocks 361-400!</p>
+
+        <h2>6. Minting Your Shibmap</h2>
+        <p>Minting a Shibmap is easy and rewarding:</p>
+        <ul>
+            <li><strong>Cost:</strong> Minting uses BONE, Shibarium’s native token. The exact cost is set by the smart contract (check the platform for current pricing).</li>
+            <li><strong>Uniqueness:</strong> Each 400-block range can only be minted once, ensuring your Shibmap is one-of-a-kind.</li>
+            <li><strong>Process:</strong> After querying blocks, you’ll see your map and attributes. Click “Mint NFT,” wait about 10 seconds for the transaction to process, and it’s yours!</li>
+        </ul>
+        <p>Your Shibmap is stored on the Shibarium blockchain, and you can view it in your wallet, trade it, or download the image anytime.</p>
+
+        <h2>7. Why Shibmap?</h2>
+        <p>Shibmap isn’t just another NFT project—it’s a celebration of Shibarium and the Shiba Inu community. Here’s why it stands out:</p>
+        <ul>
+            <li><strong>Community-Driven:</strong> Built for Shiba fans, by Shiba fans.</li>
+            <li><strong>Blockchain History:</strong> Own a piece of Shibarium’s story.</li>
+            <li><strong>Creativity:</strong> Combines art, data, and Shiba lore in a fresh way.</li>
+            <li><strong>Collectibility:</strong> Rare attributes and unique designs make every Shibmap special.</li>
+        </ul>
+
+        <h2>8. Getting Started</h2>
+        <p>Ready to mint your Shibmap? Here’s how:</p>
+        <ol>
+            <li>Install MetaMask and add the Shibarium network (Chain ID: 109, RPC: https://www.shibrpc.com).</li>
+            <li>Load your wallet with BONE tokens.</li>
+            <li>Visit the Shibmap website and click “Connect Wallet.”</li>
+            <li>Hit “Query” to see your map, then “Mint NFT” to claim it!</li>
+        </ol>
+        <p class="highlight">Need help? Join our community on social media for support and to show off your Shibmaps!</p>
+
+        <h2>9. Future Vision</h2>
+        <p>Shibmap is just the beginning. We plan to:</p>
+        <ul>
+            <li>Add more attribute categories and visual styles.</li>
+            <li>Create a marketplace for trading Shibmaps.</li>
+            <li>Introduce special events for rare block ranges.</li>
+            <li>Partner with the Shiba Inu ecosystem for exclusive perks.</li>
+        </ul>
+        <p>Together, we’ll build a vibrant world of Shibmaps that grows with Shibarium!</p>
+
+        <h2>10. Conclusion</h2>
+        <p>Shibmap is where blockchain meets creativity, and where the Shiba Inu spirit thrives. Each NFT is a unique blend of data and art, a treasure for collectors, and a tribute to Shibarium’s journey. Join us today—mint your Shibmap and become part of this exciting adventure!</p>
+        <p style="text-align: center; font-weight: bold;">Woof woof! Let’s map the future together!</p>
+    </div>
+</body>
+</html>
