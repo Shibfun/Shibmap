@@ -252,37 +252,8 @@
         const ctx = canvas.getContext('2d');
         let web3, accounts, contract;
         const CONTRACT_ADDRESS = "0xeFb2986b14B5975ceD3692C10B66A84B07E998DE";
-        const CONTRACT_ABI = [
-            {"inputs":[],"stateMutability":"nonpayable","type":"constructor"},
-            {"inputs":[{"internalType":"string","name":"uri","type":"string"},{"internalType":"string[]","name":"attributes","type":"string[]"},{"internalType":"uint256","name":"startBlock","type":"uint256"},{"internalType":"uint256","name":"endBlock","type":"uint256"}],"name":"mintNFT","outputs":[],"stateMutability":"nonpayable","type":"function"},
-            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"string","name":"newURI","type":"string"},{"internalType":"string[]","name":"newAttributes","type":"string[]"}],"name":"updateTokenMetadata","outputs":[],"stateMutability":"nonpayable","type":"function"},
-            {"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},
-            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
-            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getTokenAttributes","outputs":[{"internalType":"string[]","name":"","type":"string[]"}],"stateMutability":"view","type":"function"},
-            {"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
-            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
-            {"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},
-            {"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},
-            {"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},
-            {"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},
-            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
-            {"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},
-            {"inputs":[{"internalType":"address","name":"tokenOwner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
-            {"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
-            {"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
-            {"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
-            {"inputs":[{"internalType":"uint256","name":"groupId","type":"uint256"}],"name":"mintedGroups","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
-            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"uri","type":"string"},{"indexed":false,"internalType":"string[]","name":"attributes","type":"string[]"}],"name":"Minted","type":"event"},
-            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"newURI","type":"string"},{"indexed":false,"internalType":"string[]","name":"newAttributes","type":"string[]"}],"name":"MetadataUpdated","type":"event"},
-            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"}],"name":"OwnershipRenounced","type":"event"}
-        ];
-        const shibariumMainnet = {
-            chainId: 109,
-            chainName: 'Shibarium',
-            nativeCurrency: { name: 'BONE', symbol: 'BONE', decimals: 18 },
-            rpcUrls: ['https://www.shibrpc.com'],
-            blockExplorerUrls: ['https://shibariumscan.io']
-        };
+        const CONTRACT_ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"string","name":"uri","type":"string"},{"internalType":"string[]","name":"attributes","type":"string[]"},{"internalType":"uint256","name":"startBlock","type":"uint256"},{"internalType":"uint256","name":"endBlock","type":"uint256"}],"name":"mintNFT","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"string","name":"newURI","type":"string"},{"internalType":"string[]","name":"newAttributes","type":"string[]"}],"name":"updateTokenMetadata","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getTokenAttributes","outputs":[{"internalType":"string[]","name":"","type":"string[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"tokenOwner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"groupId","type":"uint256"}],"name":"mintedGroups","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"uri","type":"string"},{"indexed":false,"internalType":"string[]","name":"attributes","type":"string[]"}],"name":"Minted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"newURI","type":"string"},{"indexed":false,"internalType":"string[]","name":"newAttributes","type":"string[]"}],"name":"MetadataUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"}],"name":"OwnershipRenounced","type":"event"}];
+        const shibariumMainnet = {chainId: 109,chainName: 'Shibarium',nativeCurrency: { name: 'BONE', symbol: 'BONE', decimals: 18 },rpcUrls: ['https://www.shibrpc.com'],blockExplorerUrls: ['https://shibariumscan.io']};
         const attributeCategories = {
             ShibaBiome: ["Shiba Forest", "Shiba Desert", "Shiba Tundra", "Shiba Volcano", "Shiba Swamp", "Shiba Savanna", "Shiba Mountain", "Shiba Beach", "Shiba Plains", "Shiba Bamboo Grove"],
             ShibaTerrain: ["Pawprint Sands", "Bone Dust", "Fur-Clad Rock", "Shiba Mud", "Tail-Trodden Grass", "Howlstone", "Bark Shale", "Woof Clay"],
@@ -485,6 +456,19 @@
         function calculateAttributes() {
             attributes = [];
             const transactionCounts = blockData.map(block => block.txCount);
+            const calcRules = {
+                ShibaBiome: "Based on blocks 1-40 transaction total (0-2000: Forest, 2000-4000: Desert, etc.)",
+                ShibaTerrain: "Based on blocks 41-80 transaction total (0-2500: Sands, 2500-5000: Dust, etc.)",
+                ShibaTreasure: "Based on blocks 81-120 transaction total (0-1666: Bone, 1666-3332: Coin, etc.)",
+                ShibaRelic: "Based on blocks 121-160 transaction total (0-2000: Print, 2000-4000: Totem, etc.)",
+                ShibaSpirit: "Based on blocks 161-200 transaction total (0-4000: None, 4000-8000: Guardian, etc.)",
+                ShibaWeather: "Based on blocks 201-240 transaction total (0-2500: Sunny, 2500-5000: Rainy, etc.)",
+                ShibaTerritory: "Based on blocks 241-280 transaction total (0-3333: Patch, 3333-6666: Den, etc.)",
+                ShibaElement: "Based on blocks 281-320 transaction total (0-2857: Fire, 2857-5714: Water, etc.)",
+                ShibaDanger: "Based on blocks 321-360 transaction total (0-4000: Safe, 4000-8000: Mild, etc.)",
+                ShibaRarity: "Based on blocks 361-400 transaction total (0-2000: Common, 2000-4000: Uncommon, etc.)"
+            };
+
             for (let i = 0; i < 10; i++) {
                 const groupStart = i * 40;
                 const groupEnd = groupStart + 39;
@@ -493,7 +477,7 @@
                 const range = attributeRanges[attributeName];
                 const attributeIndex = Math.min(Math.floor(groupTxCount / range), attributeCategories[attributeName].length - 1);
                 const attributeValue = attributeCategories[attributeName][attributeIndex];
-                attributes.push({ name: attributeName, value: attributeValue });
+                attributes.push({ name: attributeName, value: attributeValue, rule: calcRules[attributeName] });
             }
 
             const attributesList = document.getElementById('attributesList');
@@ -503,6 +487,7 @@
                 card.className = 'attribute-card';
                 card.innerHTML = `
                     <p><strong>${attr.name.replace(/([A-Z])/g, ' $1').trim()}:</strong> ${attr.value}</p>
+                    <p style="font-size: 12px">${attr.rule}</p>
                 `;
                 attributesList.appendChild(card);
             });
@@ -562,76 +547,84 @@
         }
 
         async function mintNFT() {
-    if (!web3 || !contract || !accounts) {
-        showModal('Please connect your wallet first!');
-        return;
-    }
+            if (!web3 || !contract || !accounts) {
+                showModal('Please connect your wallet first!');
+                return;
+            }
 
-    const mintButton = document.getElementById('mintBtn');
-    mintButton.classList.add('loading');
-    mintButton.disabled = true;
+            const mintButton = document.getElementById('mintBtn');
+            mintButton.classList.add('loading');
+            mintButton.disabled = true;
 
-    try {
-        const imageData = canvas.toDataURL("image/png").split(',')[1];
-        const metadata = {
-            name: `Shibmap #${attributes[0].value}`,
-            description: "A unique Shibmap NFT based on Shibarium blockchain data",
-            image: `data:image/png;base64,${imageData}`,
-            attributes: attributes.map(attr => ({
-                trait_type: attr.name,
-                value: attr.value
-            }))
+            try {
+                const imageData = canvas.toDataURL("image/png").split(',')[1];
+                const metadata = {
+                    name: `Shibmap #${attributes[0].value}`,
+                    description: "A unique Shibmap NFT based on Shibarium blockchain data",
+                    image: `data:image/png;base64,${imageData}`,
+                    attributes: attributes.map(attr => ({
+                        trait_type: attr.name,
+                        value: attr.value
+                    }))
+                };
+                const tokenURI = `data:application/json;base64,${btoa(JSON.stringify(metadata))}`;
+                const attributeValues = attributes.map(attr => attr.value);
+
+                let countdown = 10;
+                const countdownInterval = setInterval(() => {
+                    showModal(`Minting NFT... Please wait ${countdown} seconds.`);
+                    countdown--;
+                    if (countdown < 0) clearInterval(countdownInterval);
+                }, 1000);
+
+                await contract.methods.mintNFT(tokenURI, attributeValues, startBlock, endBlock).send({ from: accounts[0] });
+                clearInterval(countdownInterval);
+                showModal('NFT minted successfully!');
+
+                mintButton.classList.remove('loading');
+                mintButton.disabled = false;
+            } catch (error) {
+                showModal('Minting failed: ' + error.message);
+                mintButton.classList.remove('loading');
+                mintButton.disabled = false;
+            }
+        }
+
+        window.onload = () => {
+            if (!window.location.protocol.startsWith('http')) {
+                showModal('Please run this page via a local server (e.g., "npx serve") to connect MetaMask.');
+            } else if (!window.ethereum) {
+                showModal('No wallet detected. Please install <a href="https://metamask.io" target="_blank">MetaMask</a>.');
+            }
         };
-        const tokenURI = `data:application/json;base64,${btoa(JSON.stringify(metadata))}`;
-        const attributeValues = attributes.map(attr => attr.value);
 
-        showModal('Minting NFT... Please wait 10 seconds.');
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        await contract.methods.mintNFT(tokenURI, attributeValues, startBlock, endBlock).send({ from: accounts[0] });
-        showModal('NFT minted successfully! Page will refresh.');
-        setTimeout(() => location.reload(), 2000);
-    } catch (error) {
-        showModal('Minting failed: ' + error.message);
-        mintButton.classList.remove('loading');
-        mintButton.disabled = false;
-    }
-}
+        window.ethereum?.on('chainChanged', (chainId) => {
+            if (parseInt(chainId, 16) !== 109) {
+                showModal('Switched to wrong network. Please reconnect to Shibarium.');
+                web3 = null;
+                contract = null;
+                accounts = null;
+                updateWalletAddress();
+                document.getElementById('mintBtn').disabled = true;
+            } else {
+                connectWallet();
+            }
+        });
 
-window.onload = () => {
-    if (!window.location.protocol.startsWith('http')) {
-        showModal('Please run this page via a local server (e.g., "npx serve") to connect MetaMask.');
-    } else if (!window.ethereum) {
-        showModal('No wallet detected. Please install <a href="https://metamask.io" target="_blank">MetaMask</a>.');
-    }
-};
+        window.ethereum?.on('accountsChanged', (newAccounts) => {
+            if (newAccounts.length) {
+                connectWallet();
+            } else {
+                showModal('Wallet disconnected. Please reconnect.');
+                web3 = null;
+                contract = null;
+                accounts = null;
+                updateWalletAddress();
+                document.getElementById('mintBtn').disabled = true;
+            }
+        });
 
-window.ethereum?.on('chainChanged', (chainId) => {
-    if (parseInt(chainId, 16) !== 109) {
-        showModal('Switched to wrong network. Please reconnect to Shibarium.');
-        web3 = null;
-        contract = null;
-        accounts = null;
-        updateWalletAddress();
-        document.getElementById('mintBtn').disabled = true;
-    } else {
-        connectWallet();
-    }
-});
-
-window.ethereum?.on('accountsChanged', (newAccounts) => {
-    if (newAccounts.length) {
-        connectWallet();
-    } else {
-        showModal('Wallet disconnected. Please reconnect.');
-        web3 = null;
-        contract = null;
-        accounts = null;
-        updateWalletAddress();
-        document.getElementById('mintBtn').disabled = true;
-    }
-});
-
-document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
+        document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
     </script>
 </body>
 </html>
